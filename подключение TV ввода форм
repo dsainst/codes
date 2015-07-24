@@ -1,0 +1,31 @@
+Для всех одинакого содержимого для всех страниц:
+1. создать новый сниппет:
+<?php
+$output='';
+if(!isset($name)){
+  return false;
+}
+if(!isset($id)||$id==''){
+  $id = $modx->documentIdentifier;
+}
+$tv = $modx->getTemplateVar($name,'*',$id);
+$output=$tv['value'];
+return $output;
+?>
+
+
+2
+создать новый TV параметр:
+заполнить имя, заголовок.
+выбрать "Тип ввода" - RichText.
+
+
+3.  добавить в чанк mm-rules:
+if($content['id'] != '1'){
+  mm_hideFields('ИМЯСНИПЕТА');
+}
+
+
+
+4.  вызвать тв в форму: (код вызова добавляется в выбранный контейнер)
+[[ИМЯTV? &name=`ИМЯСНИППЕТА` &id=`1`]]
