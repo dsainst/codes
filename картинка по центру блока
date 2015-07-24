@@ -1,0 +1,21 @@
+.blok {
+display: block;
+float: left;
+border: 1px solid #999;
+width: 285px;
+overflow: hidden;
+height: 130px;
+position: relative;
+}
+.blok img {
+width: 270px;
+vertical-align: middle;
+text-align: center;
+display: block;
+position: absolute;
+margin: auto;
+top: 0;
+bottom: 0;
+left: 0;
+right: 0;
+}
