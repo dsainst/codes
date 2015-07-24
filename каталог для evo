@@ -1,0 +1,462 @@
+Подключить в хэд:
+1. подключить JQuery
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+
+
+2.(добавить папку sourse в tpl)
+<link rel="stylesheet" href="/tpl/source/jquery.fancybox.css" type="text/css" media="all">
+  
+<script type="text/javascript" src="/tpl/source/jquery.fancybox.pack.js" ></script>
+  
+3. Вызвать fancybox
+<script type="text/javascript">
+			$(document).ready(function() {
+				$(".zoom").fancybox();
+				$(".photos-container img").live('click',function(){
+					_active = 'photo_active';
+					$('li.'+_active).removeClass(_active);
+					$(this).parent('li').addClass(_active);
+					
+					var newPhoto = $(this).data('id');
+					var big_active = 'big-photo__inner_active';
+					
+					_bigBlock = $('.big-photo');
+					$('.big-photo__inner_active',_bigBlock).animate({opacity: '0'},'5000',function(){$(this).removeClass(big_active).css('z-index','0');});
+					$('.big-'+newPhoto,_bigBlock).animate({opacity: '1'},'5000',function(){$(this).addClass(big_active).css('z-index','1');});
+					
+					return false;
+				});
+			});
+		</script>
+		
+		
+/*******************************************************************/
+СОЗДАТЬ ЧАНКИ
+1. catalog
+-------------------------------
+<section>
+		<!--Категории вложенные-->
+		[!Ditto? &tpl=`galleryItemTpl` &orderBy=`menuindex ASC` &parents=`[*id*]` &depth=`1` &filter=`isfolder,1,1` &noResults=``!]
+	<div class="clear"></div>
+		<!--Товары вложенные-->
+		[!Ditto? &tpl=`product` &orderBy=`menuindex ASC` &depth=`1` &hideFolders=`1` &noResults=``!]
+	<div class="clear"></div>
+</section> 
+
+2. galleryItemTpl
+------------------------------
+<div class="gallery">
+<a href="[(base_url)][~[+id+]~]" class="sys"><span class="pict"><img src="[+photos:mphoto+]"></span></a>
+	<a href="[(base_url)][~[+id+]~]" class="sis"><h3>[+pagetitle+]</h3></a>
+</div>
+
+3. item
+------------------------------
+<li class="item mix_row">
+	<div class="outer box"> <a href="#" class="product-image"><img src="[+photos:mphoto+]" alt="" style="max-height: 122px; max-width: 184px;"/></a>
+		<a href="[+url+]" class="bl"><div class="ic_caption">
+			<div class="actions">
+				<a rel="example_group" href="[+url+]" class="fancybox quickllook" id="fancybox170">[+pagetitle+]</a>
+			</div>
+			</div> </a>
+	</div>
+</li>
+
+4. photos
+------------------------------
+<div class="big-photo">
+	[[MultiPhotos? &tvname=`photos` &nophoto=`/tpl/images/nophoto.jpg`]]
+</div>
+<div class="photos-container">
+	[+preview+]
+</div>
+
+5. product
+-------------------------------
+<div class="gallery">
+	<a href="[(base_url)][~[+id+]~]" class="sys">
+		<span class="pict"><img src="[+photos:mphoto+]"></span>
+	</a>
+	<a href="[(base_url)][~[+id+]~]" class="sis">
+		<h3>[+pagetitle+]</h3>
+	</a>
+</div>
+
+
+
+сниппет DItto
+строка 114
+
+$phx = (isset($phx))? $phx : 1;
+
+6. product_page
+--------------------------------
+<table class="product-tab">
+	<tbody>
+		<tr>
+			<td>
+				<div>
+					{{photos}}
+				</div>
+				<div class="shk-item-2">
+					<form action="[~[*id*]~]" method="post">
+						<input type="hidden" name="shk-id" value="[*id*]" />
+						<input type="hidden" name="shk-count" value="1" size="2" maxlength="3" />
+					</form>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td rowspan="2">
+				[*content*]
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+/*******************************************************************/
+Создать 2 шаблона
+1. категория-каталога
+с вызовом чанка {{catalog}}
+
+
+2. товар
+с вызовом чанка {{product_page}}
+
+/********************************************************************/
+добавить в TV photos(в свойствах)  новые шаблоны "категория-каталога" и "товар"
+
+/*********************************************************************/
+В конфигурации плагина multifotos(плагины/multifotos/Конфигурация)
+в поле Template добавить номера новых шаблонов через запитую.
+
+/********************************************************************/
+заменить в сниппете multiphotos строчку &rowTpl = ...  на ....
+
+$rowTpl = '<div class="big-photo__inner[+active+] big-img_[+num+]"><a class="zoom big-photo-link standart-fancy" href="[+link+]" rel="gallery" title="[+title+]"><img id="big-photo" src="[+url+]" alt="[+alt+]"  class="shk-image"></a></div>';
+/**********************************************************************/
+
+Добавить стили
+
+/*-----------catalog---------------*/
+
+.big-photo {
+    position: relative;
+    width: 352px;
+    height: 346px;
+    overflow: hidden;
+    border: 1px solid #c46227;
+    text-align: center;
+    margin-bottom: 12px;
+    background: #fff;
+}
+
+.big-photo__inner {
+    position: absolute;
+    opacity: 0;
+}
+
+.big-photo__inner_active {
+    opacity: 1;
+    z-index: 1;
+}
+
+.big-photo .zoom {
+    display: block;
+    text-decoration: none;
+    color: #c46227;
+    padding: 0 !important;
+}
+/*.big-photo img{       border:1px solid #c46227;border-right:1px solid #c46227;}*/
+
+.big-photo-link {
+    display: block;
+}
+
+.photos-container {
+    overflow: hidden;
+}
+
+.photos-container ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.photos-container ul li {
+    float: left;
+    margin: 0 10px 10px 0;
+    border: 1px solid #00275e;
+    text-align: center;
+    padding: 0px !important;
+    cursor: pointer;
+}
+
+.photos-container ul li.photo_active {}
+/*.photos-container ul li:nth-child(3n+1) { margin-left: 0;}*/
+
+.photos-container ul li img {
+    border: 1px solid #fff;
+    height: 60px;
+    width: 93px;
+    cursor: pointer;
+    display: block;
+}
+
+.photos-container ul li img:hover {
+    border: 1px solid #c46227;
+}
+
+.product_tpl {
+    width: 200px;
+    float: left;
+    margin: 0 30px 30px 0;
+    direction: inline-block;
+}
+
+.product_descr {
+    clear: both;
+    padding: 10px 0;
+    line-height: 20px;
+    text-align: justify;
+}
+
+.product_comments {
+    clear: both;
+}
+
+.product_features {
+    padding: 0 0 10px 0;
+    margin: 0 0 15px 0;
+    /*border-bottom: 1px solid #c46227;*/
+}
+
+.product_feat {
+    padding: 3px 0;
+}
+
+.product_features b {
+    margin: 0 4px 0 0;
+}
+
+.product_tpl img {
+    width: 190px;
+}
+
+.product_tpl .shk-but {
+    float: right;
+}
+
+.product_photo {
+    display: block;
+    width: 190px;
+    height: 190px;
+    padding: 5px;
+    background: #eaeaea;
+}
+
+.product_photo_small {
+    width: 60px;
+    height: 60px;
+}
+
+.product_title {
+    font-size: 14px;
+    margin: 5px 0 0 0;
+    text-align: center;
+    display: block;
+    color: #c81110;
+}
+
+.product_tr td {
+    padding: 5px 0;
+}
+
+.product_photo:hover {
+    background: #ccc;
+}
+
+.shk-item {
+    width: 205px;
+    height: 315px;
+    float: left;
+    padding-top: 0px;
+    text-align: center;
+    margin-right: 10px;
+    margin-left: 40px;
+    margin-bottom: 10px;
+}
+
+.shk-item-2 {
+    height: 30px;
+    padding-top: 0px;
+    text-align: left;
+    display: none;
+}
+
+.shk-item > a {
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    font-weight: normal;
+    font-style: normal;
+    padding: 5px 0;
+    width: 205px;
+}
+/*.shk-item img{padding: 3px;border:1px solid #c46227;border-radius:5px;}
+.shk-item img:hover{padding: 3px;border:1px solid #000;}
+*/
+
+.item {
+    margin: 10px 30px 10px 30px;
+}
+
+.catalog h1 {}
+
+.gallery {
+    display: -moz-inline-stack;
+    display: inline-block;
+    #display: inline;
+    min-height: 223px;
+    _height: 223px;
+    zoom: 1;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    width: 183px;
+    vertical-align: top;
+    word-wrap: break-word;
+}
+
+a.sys {
+    background: none repeat scroll 0 0 #FEFCFD;
+    border: 1px solid #000000;
+    display: block;
+    height: 170px;
+    overflow: hidden;
+    padding: 0;
+    width: 173px;
+}
+
+a.sys:hover {
+    border: 1px solid #86080b;
+}
+
+a.sys img {
+    height: 168px;
+    width: 171px;
+}
+
+span.pict {
+    display: -moz-inline-stack;
+    display: inline-block;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+span.pict img {
+    height: 168px;
+    text-align: center;
+    vertical-align: middle;
+    width: 171px;
+}
+
+a.sis {
+    text-align: center;
+    text-decoration: none;
+}
+
+a.sis h3 {
+    padding-top: 3px;
+    font-size: 18px;
+}
+
+.price {
+    text-align: center;
+    font-size: 16px;
+    width: 205px;
+}
+
+span.shk-price {
+    color: #2D02FF;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.opis {
+    padding-top: 0px;
+}
+
+.opis td {
+    padding: 10px;
+}
+
+.product-tab {
+    width: 100%;
+}
+
+.product-tab td p {
+    line-height: 30px;
+}
+
+.product-tab td {
+    vertical-align: top;
+}
+
+.product-tab td:first-child {
+    width: 65%;
+}
+
+.product-tab td:nth-child(2) {
+    width: 35%;
+    padding: 15px;
+}
+
+.catalog-tab {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.catalog-tab h1 {
+    color: #595959;
+    letter-spacing: -2px;
+    margin: 0;
+    padding: 5px 0;
+    width: 340px;
+}
+
+.catalog-tab td {
+    line-height: 25px;
+    margin: 0 auto;
+    max-height: 180px;
+    overflow: hidden;
+    padding: 15px;
+    vertical-align: top;
+}
+
+.catalog-tab img {
+    width: 308;
+    height: 231px;
+}
+
+.catalog-tab td:first-child {
+    width: 25%;
+}
+
+.catalog-tab td:nth-child(2) {
+    width: 75%;
+}
+
+.photos-container ul li {
+    border: none;
+}
+
+.photos-container ul li img {
+    cursor: pointer;
+    display: block;
+    height: 60px;
+    width: 61px;
+}
+/************end-catalog***********/
+
+
