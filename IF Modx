@@ -1,0 +1,9 @@
+для EVO
+[!if? &is=`[*id*]:is:1` &then=`КОД_СЛАЙДЕРА`!]
+
+[*id:is=`1`:then=`123`*]
+[*parent:is=`10`:then=`foo`:else=`bar`*]
+
+если тв не пустая, то выводить
+
+[*mytv:isnot=``:then=` `*]
