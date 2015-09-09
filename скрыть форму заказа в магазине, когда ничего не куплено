@@ -1,4 +1,10 @@
+//в REVO
 function SHKloadCartCallback() {
     if ($('#shopCart > .empty').length > 0) {
         $('#shopOrderForm').remove();
     }
+}
+//в EVO
+if ($('#cartInner:has(#cartEmpty)')){
+	$('#shopOrderForm').remove();
+}
