@@ -4,7 +4,12 @@ function SHKloadCartCallback() {
         $('#shopOrderForm').remove();
     }
 }
-//в EVO
-if ($('#cartInner:has(#cartEmpty)')){
-	$('#shopOrderForm').remove();
-}
+
+или так
+
+<script type="text/javascript">
+$('#shopOrderForm').hide();
+$(document).bind('ready',function(){
+  $('#shopOrderForm').hide();
+});
+</script>
